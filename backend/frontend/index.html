@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EjendomsInvest - Investeringsanalyse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="page-container topbar__inner">
+            <div class="topbar__brand">EJENDOMSINVEST</div>
+        </div>
+    </header>
+
+    <main class="page-container">
+
+        <!-- Profiloversigt -->
+        <section id="profil-oversigt-sektion" class="section-card skjult">
+            <details>
+                <summary>Dine ejendomsprofiler</summary>
+                <div id="profil-oversigt-liste">
+                    <!-- Profiler indlæses her -->
+                </div>
+            </details>
+        </section>
+
+        <!-- Side 1: Ejendom -->
+        <div id="step-1" class="wizard-step">
+            <h1>Side 1: Ejendom</h1>
+            <p>Søg efter en adresse for at hente ejendomsoplysninger fra BBR.</p>
+
+            <section class="section-card">
+                <div id="error-message" class="status-message status-message--error"></div>
+
+                <div class="form-group">
+                    <label for="adresse-input" class="field-label">Søg efter adresse</label>
+                    <input type="text" id="adresse-input" placeholder="Skriv f.eks. Roskildevej 10" autocomplete="off">
+                </div>
+                <p id="adresse-feedback" class="feedback-line"></p>
+                <ul id="adresse-forslag" class="suggestion-list"></ul>
+
+                <div id="valgt-adresse-status"></div>
+                <div id="bbr-status"></div>
+            </section>
+
+            <section id="ejendomsprofil-sektion" class="section-card skjult">
+                <h2>Stamdata fra BBR</h2>
+
+                <div class="facts-grid">
+                    <div class="fact-item">
+                        <span class="fact-label">Vejnavn</span>
+                        <p class="fact-value"><span id="adresse-vejnavn">-</span></p>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Husnummer</span>
+                        <p class="fact-value"><span id="adresse-husnummer">-</span></p>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Postnummer</span>
+                        <p class="fact-value"><span id="adresse-postnr">-</span></p>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">By</span>
+                        <p class="fact-value"><span id="adresse-bynavn">-</span></p>
+                    </div>
+                </div>
+
+                <div class="facts-grid">
+                    <div class="fact-item fact-item--full">
+                        <span class="fact-label">Ejendomstype</span>
+                        <div class="property-type-toggle-wrapper">
+                            <div class="bbr-fallback-badge">BBR: <span id="bbr-ejendomstype">-</span></div>
+                            <div class="frontend-type-selector-group">
+                                <button type="button" class="btn btn--secondary type-selector-btn">Samlet fast ejendom</button>
+                                <button type="button" class="btn btn--secondary type-selector-btn">Ejerlejlighed</button>
+                                <button type="button" class="btn btn--secondary type-selector-btn">Bygning på lejet grund</button>
+                                <button type="button" class="btn btn--secondary type-selector-btn">Umatrikuleret ejendom</button>
+                            </div>
+                            <p class="feedback-line">Vælg den type, som bedst beskriver din ejendom.</p>
+                        </div>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Byggeår</span>
+                        <p class="fact-value"><span id="bbr-byggeaar">-</span></p>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Boligareal</span>
+                        <p class="fact-value"><span id="bbr-boligareal">-</span> m²</p>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Grundareal</span>
+                        <p class="fact-value"><span id="bbr-grundareal">-</span> m²</p>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Værelser</span>
+                        <p class="fact-value">
+                            <span id="bbr-antal-vaerelser">-</span>
+                            <input type="number" id="manuel-antal-vaerelser" class="input-minimal input--small skjult"
+                                min="0" placeholder="Indtast">
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button id="opret-profil-knap" type="button" class="btn btn--primary">Gem ejendomsprofil</button>
+                    <div id="profil-status"></div>
+                </div>
+            </section>
+
+            <section class="section-card">
+                <h2>Kort</h2>
+                <div id="kort-container">
+                    <img id="kort-billede" src="" alt="Kort over ejendom" class="skjult">
+                    <p id="kort-fejl" class="skjult">Kortdata kunne ikke hentes.</p>
+                </div>
+            </section>
+
+            <div class="step-nav">
+                <button type="button" class="btn btn--secondary" data-next-step="2">Næste &rarr;</button>
+            </div>
+        </div>
+
+        <!-- Side 2: Investeringscase -->
+        <div id="step-2" class="wizard-step skjult">
+            <h1>Side 2: Investeringscase</h1>
+
+            <section class="section-card">
+                <section id="case-init-sektion" class="skjult form-section">
+                    <div class="form-row-grid">
+                        <div class="form-group">
+                            <label for="case-casenavn-input">Casenavn</label>
+                            <input type="text" id="case-casenavn-input" placeholder="F.eks. Frederiksberg 2026">
+                        </div>
+                        <div class="form-group">
+                            <label for="case-beskrivelse-input">Beskrivelse</label>
+                            <input type="text" id="case-beskrivelse-input"
+                                placeholder="f.eks. 3-værelses rækkehus i Frederiksberg">
+                        </div>
+                        <div class="form-group">
+                            <label for="case-koebspris-input">Købspris (kr.)</label>
+                            <input type="number" id="case-koebspris-input" placeholder="f.eks. 2800000">
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h3>Købsomkostningsposter</h3>
+                        <p class="feedback-line">Tilføj f.eks. advokat, tinglysning, køberrådgivning eller andre
+                            købsrelaterede udgifter.</p>
+
+                        <div class="form-row-grid">
+                            <div class="form-group">
+                                <label for="koebsomkostning-beskrivelse-input">Beskrivelse</label>
+                                <input type="text" id="koebsomkostning-beskrivelse-input" placeholder="f.eks. Advokat">
+                            </div>
+                            <div class="form-group">
+                                <label for="koebsomkostning-beloeb-input">Beløb (kr.)</label>
+                                <input type="number" id="koebsomkostning-beloeb-input" placeholder="f.eks. 12000">
+                            </div>
+                        </div>
+
+                        <button id="tilfoej-koebsomkostning-knap" type="button" class="btn btn--secondary">Tilføj
+                            købsomkostning</button>
+                        <ul id="koebsomkostning-liste" class="liste-spacing"></ul>
+                        <p>Samlet købsomkostning: <span id="koebsomkostning-total">0,00 kr.</span></p>
+                    </div>
+                    <button id="opret-case-knap" type="button" class="btn btn--primary">Gem investeringscase</button>
+                    <div id="case-status"></div>
+                </section>
+            </section>
+
+            <div class="step-nav">
+                <button type="button" class="btn btn--secondary" data-prev-step="1">&larr; Tilbage</button>
+                <button type="button" class="btn btn--secondary" data-next-step="3">Næste &rarr;</button>
+            </div>
+        </div>
+
+        <!-- Side 3: Finansiering -->
+        <div id="step-3" class="wizard-step skjult">
+            <h1>Side 3: Finansiering</h1>
+
+            <section class="section-card">
+                <section id="laan-sektion" class="skjult form-section">
+                    <div class="form-row-grid">
+                        <div class="form-group">
+                            <label for="laan-beloeb-input">Lånebeløb (kr.)</label>
+                            <input type="number" id="laan-beloeb-input" placeholder="f.eks. 2800000">
+                        </div>
+                        <div class="form-group">
+                            <label for="laan-rente-input">Rente (%)</label>
+                            <input type="number" id="laan-rente-input" step="0.01" placeholder="f.eks. 4.0">
+                        </div>
+                        <div class="form-group">
+                            <label for="laan-loebetid-input">Løbetid (år)</label>
+                            <input type="number" id="laan-loebetid-input" min="1" max="30" placeholder="f.eks. 30">
+                        </div>
+                        <div class="form-group">
+                            <label for="laan-afdragsfri-input">Afdragsfri periode (år)</label>
+                            <input type="number" id="laan-afdragsfri-input" min="0" max="30" placeholder="f.eks. 5">
+                        </div>
+                        <div class="form-group">
+                            <label for="laan-type-input">Lånetype</label>
+                            <input type="text" id="laan-type-input" placeholder="f.eks. Realkredit">
+                        </div>
+                    </div>
+                    <button id="opret-laan-knap" type="button" class="btn btn--primary">Gem lån</button>
+                    <div id="laan-status"></div>
+                </section>
+            </section>
+
+            <div class="step-nav">
+                <button type="button" class="btn btn--secondary" data-prev-step="2">&larr; Tilbage</button>
+                <button type="button" class="btn btn--secondary" data-next-step="4">Næste &rarr;</button>
+            </div>
+        </div>
+
+        <!-- Side 4: Drift og renovering -->
+        <div id="step-4" class="wizard-step skjult">
+            <h1>Side 4: Drift og renovering</h1>
+
+            <section class="section-card">
+                <h2>Engangsudgifter</h2>
+                <section id="renovering-sektion" class="skjult form-section">
+                    <div class="form-group"><label>Beskrivelse</label><input type="text"
+                            id="renovering-beskrivelse-input" placeholder="f.eks. Nyt tag"></div>
+                    <div class="form-group"><label>Udgift (kr.)</label><input type="number" id="renovering-udgift-input"
+                            placeholder="f.eks. 30000"></div>
+                    <div class="form-group"><label>Årstal</label><input type="number" id="renovering-aarstal-input"
+                            placeholder="f.eks. 2027"></div>
+                    <button id="opret-renovering-knap" type="button" class="btn btn--secondary">Tilføj
+                        renovering</button>
+                    <div id="renovering-status"></div>
+                </section>
+            </section>
+
+            <section class="section-card">
+                <h2>Løbende omkostninger</h2>
+                <section id="driftsudgift-sektion" class="skjult form-section">
+                    <div class="form-group"><label>Beskrivelse</label><input type="text"
+                            id="driftsudgift-beskrivelse-input" placeholder="f.eks. Forsikring"></div>
+                    <div class="form-group"><label>Beløb (kr.)</label><input type="number"
+                            id="driftsudgift-beloeb-input" placeholder="f.eks. 7200"></div>
+                    <div class="form-group"><label>Frekvens</label>
+                        <select id="driftsudgift-frekvens-input">
+                            <option value="Maanedlig">Maanedlig</option>
+                            <option value="Kvartalsvis">Kvartalsvis</option>
+                            <option value="Halvaarlig">Halvaarlig</option>
+                            <option value="Aarlig">Aarlig</option>
+                        </select>
+                    </div>
+                    <button id="opret-driftsudgift-knap" type="button" class="btn btn--secondary">Tilføj
+                        driftsudgift</button>
+                    <div id="driftsudgift-status"></div>
+                </section>
+            </section>
+
+            <div class="step-nav">
+                <button type="button" class="btn btn--secondary" data-prev-step="3">&larr; Tilbage</button>
+                <button type="button" class="btn btn--secondary" data-next-step="5">Næste &rarr;</button>
+            </div>
+        </div>
+
+        <!-- Side 5: Udlejning, simulering og sammenligning -->
+        <div id="step-5" class="wizard-step skjult">
+            <h1>Side 5: Udlejning, simulering og sammenligning</h1>
+
+            <!-- Udlejning -->
+            <section class="section-card">
+                <h2>Udlejning</h2>
+                <section id="udlejning-sektion" class="skjult form-section">
+                    <div class="form-group"><label>Lejeindtægt pr. måned (kr.)</label><input type="number"
+                            id="udlejning-lejeindtaegt-input" placeholder="f.eks. 12000"></div>
+                    <div class="form-group"><label>Udlejningsudgifter pr. måned (kr.)</label><input type="number"
+                            id="udlejning-udgifter-input" placeholder="f.eks. 1500"></div>
+                    <button id="opret-udlejning-knap" type="button" class="btn btn--primary">Gem udlejning</button>
+                    <div id="udlejning-status"></div>
+                </section>
+            </section>
+
+            <!-- Kør simulering -->
+            <section class="section-card">
+                <h2>Simulering</h2>
+                <button id="koer-simulering-knap" type="button" class="btn btn--primary">Kør simulering</button>
+                <div id="simulering-status"></div>
+            </section>
+
+            <!-- Opsummering -->
+            <section class="section-card">
+                <h2>Opsummering</h2>
+                <div>
+                    <h3>Stamdata</h3>
+                    <p>Aktuel case-ID: <span id="aktiv-case-id">Ingen case valgt</span></p>
+                    <p>Casenavn: <span id="casenavn">Henter...</span></p>
+                    <p>Købspris: <span id="koebspris">Henter...</span></p>
+                </div>
+                <div>
+                    <h3>Finansiering</h3>
+                    <ul id="laan-liste"></ul>
+                </div>
+                <div>
+                    <h3>Økonomi</h3>
+                    <ul id="renovering-liste"></ul>
+                    <ul id="driftsudgift-liste" class="liste-spacing"></ul>
+                    <p>Samlet drift pr. måned: <span id="drift-maanedlig-total">Ingen data</span></p>
+                    <p>Samlet drift pr. år: <span id="drift-aarlig-total">Ingen data</span></p>
+                    <span id="lejeindtaegt" class="skjult"></span>
+                    <p class="okonomi-separator">Mdn Indtægt: <span id="udlejning-maanedlig-indtaegt"></span></p>
+                    <p>Mdn Udgift: <span id="udlejning-maanedlig-udgift"></span></p>
+                    <p>Årlig Indtægt: <span id="udlejning-aarlig-indtaegt"></span></p>
+                    <p>Årlig Udgift: <span id="udlejning-aarlig-udgift"></span></p>
+                </div>
+            </section>
+
+            <!-- Resultater: graf og tabel -->
+            <section id="simulering-sektion" class="section-card">
+                <h2>Resultater</h2>
+                <div id="simulering-graf-container"><canvas id="simulering-graf"></canvas></div>
+
+                <details>
+                    <summary>Se detaljeret fremskrivning (tabel)</summary>
+                    <div class="table-details-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>År</th>
+                                    <th>Lejeindtægt</th>
+                                    <th>Drift</th>
+                                    <th>Rente</th>
+                                    <th>Afdrag</th>
+                                    <th>Ydelse/år</th>
+                                    <th>Ydelse/md.</th>
+                                    <th>Renovering</th>
+                                    <th>Egenkapital</th>
+                                    <th>Restgæld</th>
+                                    <th>Cashflow</th>
+                                </tr>
+                            </thead>
+                            <tbody id="simulering-tbody"></tbody>
+                        </table>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Duplikering -->
+            <section class="section-card">
+                <h2>Duplikering</h2>
+                <p>Opret en kopi af den aktuelle case med alle dens tilhørende data (lån, drift, renovering, udlejning).
+                </p>
+                <button id="btn-dupliker-case" type="button" class="btn btn--secondary">Duplikér aktuel case</button>
+                <div id="dupliker-feedback" class="status-message"></div>
+            </section>
+
+            <!-- Sammenligning af investeringscases -->
+            <section class="section-card">
+                <h2>Sammenligning af investeringscases</h2>
+                <div class="form-row-grid">
+                    <div class="form-group"><label>Case ID 1</label><input type="number" id="compare-case-id-1"></div>
+                    <div class="form-group"><label>Case ID 2</label><input type="number" id="compare-case-id-2"></div>
+                    <button id="btn-sammenlign-cases" class="btn btn--secondary">Sammenlign</button>
+                </div>
+                <div id="compare-status" class="status-message"></div>
+                <div id="compare-resultat"></div>
+            </section>
+
+            <div class="step-nav">
+                <button type="button" class="btn btn--secondary" data-prev-step="4">&larr; Tilbage</button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="page-container">
+            <p>EJENDOMSINVEST</p>
+        </div>
+    </footer>
+
+    <script src="/vendor/chart.js/chart.umd.min.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>

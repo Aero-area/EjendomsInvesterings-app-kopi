@@ -1,0 +1,27 @@
+@bbr_username = INDSÆT_BRUGERNAVN_HER
+@bbr_password = INDSÆT_PASSWORD_HER
+
+### Direkte BBR-referencekald
+# Hent grund via Husnummer (200)
+GET https://services.datafordeler.dk/BBR/BBRPublic/1/REST/grund?Husnummer=0a3f507b-5a06-32b8-e044-0003ba298018&username={{bbr_username}}&password={{bbr_password}}
+Accept: application/json
+
+###
+# Hent bygning via Grund (200)
+GET https://services.datafordeler.dk/BBR/BBRPublic/1/REST/bygning?Grund=3af29060-de08-472c-b16d-c4142b67ad24&username={{bbr_username}}&password={{bbr_password}}
+Accept: application/json
+
+###
+# Hent enhed via Bygning (200)
+GET https://services.datafordeler.dk/BBR/BBRPublic/1/REST/enhed?Bygning=711025e9-1687-40ef-8d19-836e9ec8d155&username={{bbr_username}}&password={{bbr_password}}
+Accept: application/json
+
+### Backend BBR-endpoint
+# Backend BBR uden credentials: forvent 501, hvis BBR_MOCK_MODE=false og BBR-credentials mangler
+GET http://localhost:3000/api/ejendomme/bbr/0a3f507b-5a06-32b8-e044-0003ba298018
+Accept: application/json
+
+###
+# Backend BBR mock-mode: forvent 200, hvis BBR_MOCK_MODE=true
+GET http://localhost:3000/api/ejendomme/bbr/0a3f507b-5a06-32b8-e044-0003ba298018
+Accept: application/json

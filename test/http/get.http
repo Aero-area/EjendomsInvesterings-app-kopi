@@ -1,0 +1,48 @@
+### Ejendomsprofiler
+GET http://localhost:3000/api/ejendomsprofiler
+Accept: application/json
+
+### Adressesøgning
+# Fuld adresse (200)
+GET http://localhost:3000/api/adresser/soeg?q=Roskildevej%2010
+
+###
+# Delvis søgetekst / vejnavn (200)
+GET http://localhost:3000/api/adresser/soeg?q=Roskildevej
+
+###
+# Tom søgetekst / ugyldigt input (400)
+GET http://localhost:3000/api/adresser/soeg?q=
+
+### BBR og kort
+# BBR mock-mode: forvent 200, hvis BBR_MOCK_MODE=true
+GET http://localhost:3000/api/ejendomme/bbr/0a3f507b-5a06-32b8-e044-0003ba298018
+
+###
+# BBR uden credentials: forvent 501, hvis BBR_MOCK_MODE=false og BBR-credentials mangler
+GET http://localhost:3000/api/ejendomme/bbr/0a3f507b-5a06-32b8-e044-0003ba298018
+
+###
+# Kortendpoint: forvent 200, hvis DATAFORSYNINGEN_TOKEN er sat korrekt
+GET http://localhost:3000/api/ejendomme/kort/0a3f507b-5a06-32b8-e044-0003ba298018
+
+### Cases, simulering og sammenligning
+# Hent case 1001 (200)
+GET http://localhost:3000/api/cases/1001
+Accept: application/json
+
+###
+# Hent case 1003 (200)
+GET http://localhost:3000/api/cases/1003
+Accept: application/json
+
+###
+# Hent 30-års simulering for case 1001 (200)
+GET http://localhost:3000/api/cases/1001/simulering
+Accept: application/json
+
+###
+# Sammenlign cases 1001 og 1003 (200)
+GET http://localhost:3000/api/cases/sammenlign?ids=1001,1003
+Accept: application/json
+

@@ -1,0 +1,164 @@
+### Ejendomsprofiler
+# Opret ejendomsprofil (201)
+POST http://localhost:3000/api/ejendomsprofiler
+Content-Type: application/json
+
+{
+  "adresse": "Testvej 12, 2100 Koebenhavn O",
+  "ejendomstype": "Lejlighed",
+  "byggeaar": 2005,
+  "boligareal": 92.5,
+  "grundareal": null,
+  "antal_vaerelser": 3
+}
+
+###
+# Manglende adresse / ugyldigt payload (400)
+POST http://localhost:3000/api/ejendomsprofiler
+Content-Type: application/json
+
+{
+  "ejendomstype": "Ejerlejlighed",
+  "byggeaar": 1962,
+  "boligareal": 87.00,
+  "grundareal": null,
+  "antal_vaerelser": 3
+}
+
+### Investeringscase - init
+# Opret initiel case (201)
+POST http://localhost:3000/api/cases/init
+Content-Type: application/json
+
+{
+  "profil_id": 100,
+  "casenavn": "Min foerste investeringscase",
+  "beskrivelse": "Dette er en nyinitialiseret case klar til underentiteter",
+  "koebspris": 2500000,
+  "koebsomkostninger": 50000
+}
+
+###
+# Ugyldig payload / valideringsfejl (400)
+POST http://localhost:3000/api/cases/init
+Content-Type: application/json
+
+{
+  "profil_id": 100,
+  "casenavn": "Manglende koeberpris"
+}
+
+### Lån, renovering, drift og udlejning
+# Opret lån (201)
+POST http://localhost:3000/api/cases/1000/laan
+Content-Type: application/json
+
+{
+  "laanebeloeb": 2000000,
+  "rente": 4.5,
+  "loebetid_aar": 30,
+  "afdragsfri_periode": 0,
+  "laanetype": "Banklaan"
+}
+
+###
+# Lån til case der ikke findes (404)
+POST http://localhost:3000/api/cases/999/laan
+Content-Type: application/json
+
+{
+  "laanebeloeb": 2000000,
+  "rente": 4.5,
+  "loebetid_aar": 30
+}
+
+###
+# Opret renovering (201)
+POST http://localhost:3000/api/cases/1000/renovering
+Content-Type: application/json
+
+{
+  "beskrivelse": "Nyt tag og tagrender",
+  "udgift": 150000,
+  "aarstal": 2025
+}
+
+###
+# Renovering til case der ikke findes (404)
+POST http://localhost:3000/api/cases/999/renovering
+Content-Type: application/json
+
+{
+  "beskrivelse": "Nyt tag og tagrender",
+  "udgift": 150000,
+  "aarstal": 2025
+}
+
+###
+# Opret driftsudgift (201)
+POST http://localhost:3000/api/cases/1000/driftsudgift
+Content-Type: application/json
+
+{
+  "beskrivelse": "Fællesudgifter",
+  "beloeb": 2500,
+  "frekvens": "Maanedlig"
+}
+
+###
+# Driftsudgift til case der ikke findes (404)
+POST http://localhost:3000/api/cases/999/driftsudgift
+Content-Type: application/json
+
+{
+  "beskrivelse": "Fællesudgifter",
+  "beloeb": 2500,
+  "frekvens": "Maanedlig"
+}
+
+###
+# Opret udlejning (201) kræver en case uden eksisterende udlejning
+# Hvis seed-data allerede har udlejning på casen, forvent 409
+POST http://localhost:3000/api/cases/1000/udlejning
+Content-Type: application/json
+
+{
+  "lejeindtaegt": 12500,
+  "udlejningsudgifter": 1000
+}
+
+###
+# Udlejning findes allerede (409) (case 1001 har allerede udlejning i seed data)
+POST http://localhost:3000/api/cases/1001/udlejning
+Content-Type: application/json
+
+{
+  "lejeindtaegt": 15000
+}
+
+###
+# Udlejning til case der ikke findes (404)
+POST http://localhost:3000/api/cases/999/udlejning
+Content-Type: application/json
+
+{
+  "lejeindtaegt": 12500
+}
+
+### Duplikering
+# Dupliker case (uden nyt navn)
+POST http://localhost:3000/api/cases/1001/dupliker
+Content-Type: application/json
+
+{}
+
+###
+# Dupliker case (med nyt navn)
+POST http://localhost:3000/api/cases/1001/dupliker
+Content-Type: application/json
+
+{
+  "casenavn": "Min foerste lejlighed - variant B"
+}
+
+

@@ -1,0 +1,4 @@
+### Slet ejendomsprofil og tilhørende cases (200)
+# Denne request sletter profil 101 og alle tilhørende cases fra databasen.
+DELETE http://localhost:3000/api/ejendomsprofiler/101
+Accept: application/json

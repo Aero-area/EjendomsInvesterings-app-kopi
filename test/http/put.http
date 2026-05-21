@@ -1,0 +1,31 @@
+### Ejendomsprofil
+# Opdater ejendomsprofil (200)
+PUT http://localhost:3000/api/ejendomsprofiler/101
+Content-Type: application/json
+
+{
+  "antal_vaerelser": 5
+}
+
+### Investeringscase
+# Opdater investeringscase (f.eks. ændre casenavn) (200)
+PUT http://localhost:3000/api/cases/1001
+Content-Type: application/json
+
+{
+  "casenavn": "Opdateret Casenavn",
+  "beskrivelse": "Dette er en redigeret case.",
+  "koebspris": 2500000,
+  "koebsomkostninger": 50000
+}
+
+### Investeringscase
+# Ugyldig opdatering af investeringscase (400)
+PUT http://localhost:3000/api/cases/1001
+Content-Type: application/json
+
+{
+  "casenavn": "   ",
+  "koebspris": -1,
+  "koebsomkostninger": -5000
+}

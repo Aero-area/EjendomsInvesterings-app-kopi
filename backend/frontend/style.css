@@ -1,0 +1,581 @@
+/* Variabler */
+:root {
+    --color-primary: #2D3930;
+    --color-secondary: #5F6762;
+
+    --surface-base: #F5F5F5;
+    --surface-card: #FFFFFF;
+
+    --text-primary: #222222;
+    --text-secondary: #555555;
+    --text-inverted: #FFFFFF;
+
+    --border-color: #D0D0D0;
+
+    --status-success-bg: #DEF0DE;
+    --status-success-text: #2E6E3A;
+    --status-error-bg: #FDECEA;
+    --status-error-text: #A94442;
+    --status-info-bg: #E8EFF5;
+    --status-info-text: #374E61;
+    --status-warning-bg: #FDF3E2;
+    --status-warning-text: #7A5A1A;
+
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    --input-height: 42px;
+    --radius: 4px;
+}
+
+/* Grundstil */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--surface-base);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+    margin: 0 0 var(--spacing-sm);
+    color: var(--color-primary);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+h1 {
+    font-size: 1.4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+h2 {
+    font-size: 1.15rem;
+}
+
+h3 {
+    font-size: 1rem;
+}
+
+p {
+    margin: 0 0 var(--spacing-sm);
+}
+
+p:last-child {
+    margin-bottom: 0;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+ul,
+ol {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+}
+
+img,
+canvas {
+    max-width: 100%;
+    display: block;
+}
+
+.skjult {
+    display: none !important;
+}
+
+/* Layout */
+.page-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+/* Topbar */
+.topbar {
+    background-color: var(--color-primary);
+    color: var(--text-inverted);
+    border-bottom: 2px solid #888;
+}
+
+.topbar__inner {
+    display: flex;
+    align-items: center;
+    height: 56px;
+}
+
+.topbar__brand {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+/* Footer */
+.site-footer {
+    background-color: var(--surface-card);
+    border-top: 1px solid var(--border-color);
+    padding: var(--spacing-lg) 0;
+    margin-top: var(--spacing-xl);
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Cards og sektioner */
+.section-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Ejendomsprofiler genereret fra JavaScript */
+.property-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Knapper */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--input-height);
+    padding: 0 var(--spacing-lg);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-family: inherit;
+}
+
+.btn--primary {
+    background-color: var(--color-primary);
+    color: var(--text-inverted);
+    border-color: var(--color-primary);
+}
+
+.btn--primary:hover {
+    background-color: #1F2421;
+    border-color: #1F2421;
+}
+
+.btn--secondary {
+    background-color: var(--surface-card);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.btn--secondary:hover {
+    background-color: var(--surface-base);
+    border-color: var(--color-primary);
+}
+
+/* Navigation mellem sider */
+.step-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.step-nav button {
+    min-width: 120px;
+}
+
+/* Formularer og inputs */
+.form-row-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+@media (min-width: 600px) {
+    .form-row-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--spacing-md);
+}
+
+.field-label,
+.form-group label {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+}
+
+.text-input,
+input[type="text"],
+input[type="number"],
+input[type="password"],
+select {
+    width: 100%;
+    height: var(--input-height);
+    padding: 0 var(--spacing-sm);
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+.text-input:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+select:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+    border-color: var(--color-primary);
+}
+
+/* Ejendomstype-knapper */
+.property-type-toggle-wrapper {
+    margin-top: var(--spacing-xs);
+}
+
+.bbr-fallback-badge {
+    display: inline-block;
+    padding: 2px var(--spacing-sm);
+    background-color: var(--surface-base);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.frontend-type-selector-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.type-selector-btn {
+    height: 34px;
+    padding: 0 var(--spacing-md);
+    font-size: 0.85rem;
+}
+
+/* BBR-data */
+.facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.fact-item {
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-sm);
+}
+
+.fact-item--full {
+    grid-column: 1 / -1;
+}
+
+.fact-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.fact-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.card-actions {
+    margin-top: var(--spacing-md);
+}
+
+/* Adressesøgning */
+.suggestion-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    max-height: 260px;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.suggestion-list:empty {
+    display: none;
+    border: none;
+}
+
+.suggestion-list li {
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.suggestion-list li:last-child {
+    border-bottom: none;
+}
+
+.suggestion-list li:hover {
+    background-color: var(--surface-base);
+}
+
+.suggestion-list button {
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.feedback-line {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-sm);
+    min-height: 1.4em;
+}
+
+/* Status og feedback */
+.status-message {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-top: var(--spacing-sm);
+    border: 1px solid transparent;
+}
+
+.status-message:empty,
+#error-message:empty {
+    display: none;
+}
+
+.status-message--success {
+    background-color: var(--status-success-bg);
+    color: var(--status-success-text);
+    border-color: var(--status-success-text);
+}
+
+.status-message--error {
+    background-color: var(--status-error-bg);
+    color: var(--status-error-text);
+    border-color: var(--status-error-text);
+}
+
+.status-message--warning {
+    background-color: var(--status-warning-bg);
+    color: var(--status-warning-text);
+    border-color: var(--status-warning-text);
+}
+
+/* Domænespecifikke status-klasser sat af app.js */
+.bbr-henter,
+.profil-henter,
+.case-henter,
+.laan-henter,
+.renovering-henter,
+.driftsudgift-henter,
+.udlejning-henter {
+    background-color: var(--status-info-bg);
+    color: var(--status-info-text);
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    margin-top: var(--spacing-sm);
+}
+
+.bbr-fejl,
+.profil-fejl,
+.case-fejl,
+.laan-fejl,
+.renovering-fejl,
+.driftsudgift-fejl,
+.udlejning-fejl {
+    background-color: var(--status-error-bg);
+    color: var(--status-error-text);
+    border: 1px solid var(--status-error-text);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    margin-top: var(--spacing-sm);
+}
+
+.bbr-succes,
+.profil-succes,
+.case-succes,
+.laan-succes,
+.renovering-succes,
+.driftsudgift-succes,
+.udlejning-succes {
+    background-color: var(--status-success-bg);
+    color: var(--status-success-text);
+    border: 1px solid var(--status-success-text);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    margin-top: var(--spacing-sm);
+}
+
+/* Fallback: statusfelter med tekst men uden specifik klasse */
+[id$="-status"]:not(:empty):not([class*="-henter"]):not([class*="-fejl"]):not([class*="-succes"]):not(.skjult) {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    background-color: var(--surface-base);
+    color: var(--text-primary);
+    margin-top: var(--spacing-sm);
+}
+
+/* Tabeller og graf */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+th,
+td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.table-details-content {
+    overflow-x: auto;
+    margin-top: var(--spacing-sm);
+}
+
+#simulering-graf-container {
+    height: 360px;
+    margin-top: var(--spacing-md);
+}
+
+/* Details */
+details {
+    margin-top: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+details summary {
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    font-weight: 500;
+    background-color: var(--surface-base);
+    user-select: none;
+}
+
+details summary:hover {
+    background-color: #EBEBEB;
+}
+
+details[open] summary {
+    border-bottom: 1px solid var(--border-color);
+}
+
+details .table-details-content {
+    padding: var(--spacing-md);
+}
+
+/* Sammenligning */
+#compare-resultat {
+    margin-top: var(--spacing-md);
+}
+
+/* Kort */
+#kort-container img {
+    max-width: 100%;
+    border-radius: var(--radius);
+}
+
+/* Wizard */
+.wizard-step {
+    margin-top: var(--spacing-lg);
+}
+
+/* Hjælpeklasser */
+.feedback-spacing {
+    margin-top: var(--spacing-md);
+}
+
+.liste-spacing {
+    margin-top: var(--spacing-sm);
+}
+
+.okonomi-separator {
+    margin-top: var(--spacing-sm);
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-sm);
+}
+
+.input--small {
+    width: 80px;
+}
+
+/* Responsivt */
+@media (max-width: 600px) {
+    .form-row-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .step-nav {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .step-nav button {
+        width: 100%;
+    }
+}
