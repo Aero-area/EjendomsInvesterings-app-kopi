@@ -1,3 +1,4 @@
+// Verificere at DAWA-API rådata mappes korrekt til applikations Data Transfer Object uden netværksoplsag. 
 const DawaService = require('../services/DawaService');
 
 describe('DawaService.soegAutocomplete', () => {

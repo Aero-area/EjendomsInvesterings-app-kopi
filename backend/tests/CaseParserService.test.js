@@ -1,3 +1,5 @@
+// At LEFT JOIN rækker fra databasne bliver samlet korrekt. 
+// Parseren beviser at den fjerner dubletter fra SQ-joins og samler dem til et struktureret JSON-objekt.
 const CaseParserService = require('../services/CaseParserService');
 
 describe('CaseParserService.parseCaseRows', () => {

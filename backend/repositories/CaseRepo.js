@@ -1,7 +1,17 @@
-const sql = require('mssql');
-const poolPromise = require('../db/dbConnection');
+/*
+Håndterer rå, asynkrone CRUD-kald til Azure SQL-databasen 
+for ejendomsprofiler og beskytter data via transaktioner og parameterisering.
+Persistenslaget
+*/
+const sql = require('mssql'); // Bruges til at angive præcise SQL-datatyper
+const poolPromise = require('../db/dbConnection'); // Henter det asynkrome poolPromise
 
 class CaseRepo {
+    // Opretter en ny investeringscase returnerer case_id.
+    /*
+    Asynkron kørsel sikrer, at Node.js-serveren kan betjene andre brugere i mellemtiden, 
+    mens denne ene tråd venter på svar fra Azure SQL over internettet.
+    */
     // Henter en investeringscase med tilhørende lån, renovering, drift og udlejning.
     static async findCaseWithDetails(caseId) {
         const pool = await poolPromise;
@@ -230,7 +240,7 @@ class CaseRepo {
     // Opretter en kopi af en investeringscase og alle tilknyttede økonomiposter i én transaktion.
     static async duplicateCase(caseId, nytCasenavn = null) {
         const pool = await poolPromise;
-        const transaction = new sql.Transaction(pool);
+        const transaction = new sql.Transaction(pool); // Transaktionen sikrer, at du rollbacker alt, hvis én af de mange fejler. 
 
         try {
             await transaction.begin();
@@ -288,7 +298,11 @@ class CaseRepo {
 
             const renoveringRequest = new sql.Request(transaction);
             renoveringRequest.input('originalCaseId', sql.Int, caseId);
-            renoveringRequest.input('nyCaseId', sql.Int, nyCaseId);
+            renoveringRequest.input('nyCaseId', sql.Int, nyCaseId); 
+            /*
+            I stedet for at hente data ind i JavaScript og sende det op igen, 
+            bruger vi SQL's evne til at flytte data internt:
+            */
             await renoveringRequest.query(`
                 INSERT INTO EjendomsInvest.Renovering (
                     case_id, beskrivelse, udgift, aarstal

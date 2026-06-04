@@ -9,13 +9,13 @@ const config = {
     database: process.env.DB_DATABASE,
     port: Number(process.env.DB_PORT) || 1433,
     options: {
-        encrypt: true,
+        encrypt: true, // Påkrævet for Azure SQL
         trustServerCertificate: false
     },
     connectionTimeout: 30000,
     requestTimeout: 30000
 };
-// Opretter en delt connection pool til Azure SQL.
+// Opretter en delt connection pool til Azure SQL. Asynkront håndteret med en Promise, så den kan genbruges. 
 const poolPromise = new sql.ConnectionPool(config)
     .connect()
     .then(pool => {

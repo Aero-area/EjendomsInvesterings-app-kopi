@@ -1,3 +1,5 @@
+// Controller-metoderne aktiveres af Express-routeren (caseRoutes.js).
+// Oversætter HTTP-protokollen (requests/responses) til kald af interne forretningslogik-metoder.
 const CaseParserService = require('../services/CaseParserService');
 const CaseRepo = require('../repositories/CaseRepo');
 const EjendomsRepo = require('../repositories/EjendomsRepo');
@@ -15,7 +17,7 @@ function parsePositivtId(value) {
 
     return id;
 }
-
+// Hvis noget går galt i databasen eller servicelaget, så sender den en JSON-fejlbesked tilbage til frontenden
 function sendServiceFejl(res, error, fallbackBesked) {
     if (error.name === 'ServiceError') {
         if (error.status >= 500) {

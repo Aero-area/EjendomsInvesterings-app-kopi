@@ -1,5 +1,8 @@
 // Alle fetch-kald til backend. Kaster Error ved ikke-ok svar. Rører ikke DOM eller state.
-
+/* 
+Det er den moderne standard for asynkron kommunikation i browseren. 
+Det returnerer et Promise, som vi håndterer med async/await for at holde koden læselig.
+*/
 // Forsøger at parse fejlbesked fra JSON-svar, ellers fallback.
 async function parseFejlbesked(response, fallback) {
     try {
@@ -11,7 +14,7 @@ async function parseFejlbesked(response, fallback) {
 }
 
 // Adresse
-
+// Sender en GET-forespørgsel til backenden med en søgetekst og returnerer en liste af adresseforslag. 
 export async function soegAdresseApi(soegetekst) {
     const response = await fetch(`/api/adresser/soeg?q=${encodeURIComponent(soegetekst)}`);
     if (!response.ok) {
@@ -25,7 +28,7 @@ export async function soegAdresseApi(soegetekst) {
 }
 
 // BBR og kort
-
+// Henter BBR-data for en specifik ejendom baseret på et DAWA-ID.
 export async function hentBbrApi(dawaId) {
     const response = await fetch(`/api/ejendomme/bbr/${encodeURIComponent(dawaId)}`);
     if (!response.ok) {
@@ -90,8 +93,8 @@ export async function hentCaseApi(caseId) {
     if (!result.data) throw new Error('Ingen case-data modtaget fra serveren.');
     return result.data;
 }
-
-export async function initCaseApi(payload) {
+// Sender et POST-kald til backenden for at oprette en ny investeringscase. Payload indeholder alle nødvendige data.
+export async function initCaseApi(payload) { 
     const response = await fetch('/api/cases/init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

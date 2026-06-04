@@ -1,9 +1,18 @@
-const sql = require('mssql');
-const poolPromise = require('../db/dbConnection');
+/*
+Håndterer rå, asynkrone CRUD-kald til Azure SQL-databasen 
+for ejendomsprofiler og beskytter data via transaktioner og parameterisering.
+Persistenslaget
+*/
+const sql = require('mssql'); // Bruges til at angive præcise SQL-datatyper
+const poolPromise = require('../db/dbConnection'); // Henter det asynkrome poolPromise
 
 class EjendomsRepo {
     // Opretter en ny ejendomsprofil og returnerer profil_id.
-    static async opretProfil(profilData) {
+    /*
+    Asynkron kørsel sikrer, at Node.js-serveren kan betjene andre brugere i mellemtiden, 
+    mens denne specifikke tråd venter på svar fra Azure SQL over internettet.
+    */
+    static async opretProfil(profilData) { // Opretter en ny ejendomsprofil i databasen og returnerer den genererede profil_id.
         const pool = await poolPromise;
 
         const result = await pool
@@ -15,6 +24,10 @@ class EjendomsRepo {
             .input('boligareal', sql.Decimal(10, 2), profilData.boligareal)
             .input('grundareal', sql.Decimal(10, 2), profilData.grundareal ?? null)
             .input('antal_vaerelser', sql.Int, profilData.antal_vaerelser ?? null)
+            /*
+            Brug af .input() erstatter rå JavaScript-strenge med pre-kompilerede SQL-variable, 
+            hvilket fuldstændigt eliminerer risikoen for SQL-injection-angreb.
+            */
             .query(`
                 INSERT INTO EjendomsInvest.Ejendomsprofil (
                     bruger_id,
@@ -97,6 +110,11 @@ class EjendomsRepo {
         return result.rowsAffected[0] > 0;
     }
 
+    /*
+    En transaktion garanterer ACID-princippet ved at udføre sletningen som 'alt-eller-intet'; 
+    hvis ét trin fejler, rulles alt tilbage (rollback), så databasen aldrig lander i en korrupt 
+    eller halvslettet tilstand.
+    */
     static async deleteProfil(profilId, brugerId) {
         const pool = await poolPromise;
         const transaction = new sql.Transaction(pool);
@@ -121,7 +139,7 @@ class EjendomsRepo {
 
             const deleteRequest = new sql.Request(transaction);
             deleteRequest.input('profil_id', sql.Int, profilId);
-
+            // JOIN: JOIN-operationen bygger broen mellem de to tabeller der har relation. 
             await deleteRequest.query(`
                 DELETE u FROM EjendomsInvest.Udlejning u
                 INNER JOIN EjendomsInvest.Investeringscase i ON u.case_id = i.case_id

@@ -1,3 +1,5 @@
+// Ekstern gateway, der validerer og henter præcise adresseoplysninger fra DAWA-API'et,
+// Modtager et stort JSON-array med koordinater, vejnavne, husnumre osv.
 class DawaService {
     static BASE_URL = 'https://api.dataforsyningen.dk';
     static AUTOCOMPLETE_PATH = '/autocomplete';
@@ -10,8 +12,8 @@ class DawaService {
             `${DawaService.BASE_URL}${DawaService.AUTOCOMPLETE_PATH}`
         );
 
-        url.searchParams.set('q', normaliseretSoegetekst);
-
+        url.searchParams.set('q', normaliseretSoegetekst); //Søgetekst
+        // Begræns til adgangsadresse-typer for at undgå irrelevante resultater. 
         try {
             const response = await fetch(url, {
                 method: 'GET',
@@ -27,7 +29,7 @@ class DawaService {
                     502
                 );
             }
-
+            // Payload: Her modtager vi outputtet efter await response.json() er kørt.
             const payload = await response.json();
 
             if (!Array.isArray(payload)) {
@@ -54,7 +56,7 @@ class DawaService {
             );
         }
     }
-
+    // Valider søgetekst for at sikre, at den er en ikke-tom streng af passende længde.
     static #validerSoegetekst(soegetekst) {
         if (typeof soegetekst !== 'string') {
             throw DawaService.#createServiceError(
@@ -93,7 +95,7 @@ class DawaService {
         return trimmed;
     }
 
-    // Mapper DAWA-resultat til et ensartet DTO-format.
+    // Mapper DAWA-resultat til et ensartet DTO-format. Data Transfer Object.
     static #mapAutocompleteItem(item) {
         if (!item || typeof item !== 'object') {
             return null;
@@ -119,7 +121,7 @@ class DawaService {
             postnrnavn: data.postnrnavn || null
         };
     }
-
+    // Metode til at skabe ensartede fejlobjekter for bedre fejlhåndtering i hele applikationen.
     static #createServiceError(code, message, status = 500, cause = null) {
         const error = new Error(message);
         error.name = 'ServiceError';

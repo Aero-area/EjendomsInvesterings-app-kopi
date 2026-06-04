@@ -1,6 +1,6 @@
 function opretValideringsfejl(besked) {
     const error = new Error(besked);
-    error.isValidation = true;
+    error.isValidation = true; // fortælle CaseController, at det er en brugerindtastningsfejl (HTTP 400)
     return error;
 }
 
@@ -83,6 +83,7 @@ class Investeringscase {
         return total;
     }
 
+    // simulerer ejendommens økonomi over 30 år ved i en løkke at trække renter, afdrag, drift og renovering fra lejeindtægterne for hvert enkelt kalenderår.
     beregnCashflow(antalAar = 30) {
         if (!Number.isInteger(antalAar) || antalAar < 30) {
             throw opretValideringsfejl('antalAar skal være et heltal på mindst 30.');
@@ -94,6 +95,7 @@ class Investeringscase {
         const startAarstal = this.oprettet_dato.getFullYear();
 
         // Kloning af lån for at simulere restgældsafvikling uden mutation af originaldata
+        // Laver en kopi af lånene i hukommelsen, så vi kan trække afdrag fra restgælden under simulationen uden at ødelægge de originale data i databasen.
         let aktiveLaan = this.laan.map(l => ({
             laanebeloeb: Number(l.laanebeloeb),
             restgaeld: Number(l.laanebeloeb),
@@ -110,6 +112,7 @@ class Investeringscase {
             const aktueltAarstal = startAarstal + aar - 1;
 
             // Beregner renter, afdrag og ydelse for hvert lån.
+            // Annuitetsformlen
             for (const laan of aktiveLaan) {
                 if (laan.restgaeld > 0) {
                     const renteUdgift = laan.restgaeld * laan.renteFaktor;
@@ -121,14 +124,14 @@ class Investeringscase {
                     } else {
                         ydelse = laan.laanebeloeb / laan.loebetid;
                     }
-
+                    // Hvis simulationen er inden for den afdragsfrie periode, sættes afdraget til nul, og den årlige ydelse reduceres til kun at dække renteudgiften.
                     if (aar <= laan.afdragsfri_periode) {
                         ydelse = renteUdgift;
                         afdrag = 0;
                     } else {
                         afdrag = ydelse - renteUdgift;
                     }
-
+                    // Lånets sidste år: Sikrer, at vi i lånets sidste år ikke afdrager mere, end der faktisk er tilbage i restgæld, hvilket forhindrer negative værdier.
                     if (afdrag > laan.restgaeld) {
                         afdrag = laan.restgaeld;
                         ydelse = afdrag + renteUdgift;
@@ -150,11 +153,12 @@ class Investeringscase {
 
             // Samler årets indtægter og udgifter.
             let cashflow = aarligLeje - aarligDrift - aaretsYdelse - aaretsRenovering;
-
+            // Købsomkostningerne
             if (aar === 1) {
                 cashflow -= this.koebsomkostninger;
             }
-
+            // Generering af årets resultat via Data Transfer Object (DTO)
+            // For hvert år afrundes tallene til hele kroner med Math.round() og pushes ind i et array, som frontenden direkte kan bruge til at tegne tabeller og grafer med
             simulering.push({
                 aar: aar,
                 aarstal: aktueltAarstal,
@@ -173,5 +177,10 @@ class Investeringscase {
         return simulering;
     }
 }
+/*
+simuleringsarray returneres først til CaseController, 
+som sender det som JSON over netværket til apiClient.js, 
+hvorefter frontend/app.js modtager det og opdaterer skærmen
+*/
 
 module.exports = Investeringscase;

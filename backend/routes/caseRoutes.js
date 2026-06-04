@@ -1,13 +1,19 @@
-const express = require('express');
-const router = express.Router();
-const CaseController = require('../controllers/CaseController');
+/*
+Definerer API'ets routing-tabel ved at mappe HTTP-metoder (GET, POST, PUT) 
+og URL-stier til de specifikke metoder i CaseController
+*/
+// Modularisering
+const express = require('express'); 
+const router = express.Router(); // Bruger Express' indbyggede router-objekt til at definere ruter, som senere kobles på hoved-applikationen i app.js
+const CaseController = require('../controllers/CaseController'); // Importerer controlleren, da det er her, den faktiske logik for hver rute bor.
 
+// router.get: Definerer HTTP-metoden (GET betyder "hent data").
 // Adresseopslag
 router.get('/adresser/soeg', CaseController.soegAdresse);
 
 // Læsning og simulering
 router.get('/cases/sammenlign', CaseController.sammenlignCases);
-router.get('/cases/:id/simulering', CaseController.getSimulation);
+router.get('/cases/:id/simulering', CaseController.getSimulation); // Dynamiske parametre
 router.get('/cases/:id', CaseController.getCaseById);
 
 // Case-oprettelse og grunddata

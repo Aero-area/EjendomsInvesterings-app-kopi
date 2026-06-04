@@ -1,3 +1,4 @@
+// Omdanner adressens geografiske koordinater til en gyldig Web Map Service-URL
 require('dotenv').config();
 
 // Henter koordinater fra DAWA og bygger en URL til luftfoto.
@@ -25,7 +26,7 @@ class KortService {
                 501
             );
         }
-
+        // Hentning af koordinater fra DAWA
         const dawaUrl = `${KortService.#DAWA_BASE}/adgangsadresser/${encodeURIComponent(dawaId)}?srid=25832&format=json`;
         const dawaResponse = await fetch(dawaUrl, { headers: { Accept: 'application/json' } });
 
@@ -50,7 +51,8 @@ class KortService {
 
         const [easting, northing] = koordinater;
 
-        const buf = KortService.#BUFFER_M;
+        // Beregning af Bounding Box (BBOX)
+        const buf = KortService.#BUFFER_M; // Buffer i meter.
         const bbox = [
             easting - buf,
             northing - buf,
@@ -58,6 +60,7 @@ class KortService {
             northing + buf
         ].join(',');
 
+        // Konstruktion af WMS-URL
         const params = new URLSearchParams({
             service: 'WMS',
             version: '1.1.1',

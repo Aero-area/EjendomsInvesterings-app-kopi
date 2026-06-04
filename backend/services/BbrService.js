@@ -1,6 +1,8 @@
+// henter de tekniske detaljer om ejendommen (f.eks. grundareal, byggeår, antal værelser)
 require('dotenv').config();
 
 // Officiel BBR-kodeoversættelse: bestemtFastEjendom.ejendomstype → dansk tekst.
+// Konfiguration og mapping-tabel 
 const EJENDOMSTYPE_MAP = {
     '1': 'Samlet fast ejendom',
     '2': 'Ejerlejlighed',
@@ -9,13 +11,14 @@ const EJENDOMSTYPE_MAP = {
 };
 
 class BbrService {
+    // Validerer input
     static async hentEjendomsdata(dawaId) {
         const normaliseretDawaId = BbrService.#validerDawaId(dawaId);
 
         const bbrBaseUrl = process.env.BBR_BASE_URL;
         const bbrUsername = process.env.BBR_USERNAME;
         const bbrPassword = process.env.BBR_PASSWORD;
-
+        // Fejlbesked hvis BBR ikke er konfigureret korrekt. 
         if (!bbrBaseUrl || !bbrUsername || !bbrPassword) {
             throw BbrService.#createServiceError(
                 'BBR_NOT_CONFIGURED',
@@ -23,7 +26,7 @@ class BbrService {
                 501
             );
         }
-
+        // Hent og parse data fra BBR. 
         try {
             return await BbrService.#fetchRealBbrData(normaliseretDawaId, bbrBaseUrl, bbrUsername, bbrPassword);
         } catch (error) {
@@ -36,7 +39,7 @@ class BbrService {
             );
         }
     }
-
+    // Henter og samler data fra BBR's REST API. 
     static async #fetchRealBbrData(husnummerId, baseUrl, username, password) {
         let ejendomstype = null;
         let grundareal = null;
@@ -116,20 +119,20 @@ class BbrService {
             ? baseUrl
             : `${baseUrl.replace(/\/$/, '')}/BBR/BBRPublic/1/REST`;
 
-        const urlStr = `${base.replace(/\/$/, '')}/${entity}`;
+        const urlStr = `${base.replace(/\/$/, '')}/${entity}`; // Konstruerer den korrekte URL (med username/password som query-parametre)
         const urlObj = new URL(urlStr);
         urlObj.searchParams.append(filterParam, filterValue);
         urlObj.searchParams.append('username', username);
         urlObj.searchParams.append('password', password);
 
-        const res = await fetch(urlObj.toString(), { headers: { 'Accept': 'application/json' } });
+        const res = await fetch(urlObj.toString(), { headers: { 'Accept': 'application/json' } }); // BBR kræver accept header for at returnere JSON. 
 
         if (!res.ok) {
             throw BbrService.#createServiceError('BBR_API_ERROR', `BBR opslag mislykkedes for ressource '${entity}' (HTTP ${res.status})`, res.status >= 500 ? 502 : res.status);
         }
         return await res.json();
     }
-
+    // Validerer og normalisere input for at sikre, at det er en ikke trimmed streng af passende længde. 
     static #validerDawaId(dawaId) {
         const trimmed = String(dawaId || '').trim();
 
@@ -141,7 +144,7 @@ class BbrService {
             );
         }
 
-        if (trimmed.length > 100) {
+        if (trimmed.length > 100) { // sikkerhedsforanstaltning
             throw BbrService.#createServiceError(
                 'BBR_INPUT_TOO_LONG',
                 'dawaId må maks være 100 tegn.',
@@ -151,7 +154,7 @@ class BbrService {
 
         return trimmed;
     }
-
+    // Fejlskabelon: Alle fejl i denne service oprettes gennem denne metode. 
     static #createServiceError(code, message, status = 500, cause = null) {
         const error = new Error(message);
         error.name = 'ServiceError';
