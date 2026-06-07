@@ -1,5 +1,7 @@
 // Controller-metoderne aktiveres af Express-routeren (caseRoutes.js).
 // Oversætter HTTP-protokollen (requests/responses) til kald af interne forretningslogik-metoder.
+// SEPARATION OF CONCERNS: Controller validerer HTTP input og delegerer.
+// Skriver ingen SQL. Kender ingen services direkte.
 const CaseParserService = require('../services/CaseParserService');
 const CaseRepo = require('../repositories/CaseRepo');
 const EjendomsRepo = require('../repositories/EjendomsRepo');
@@ -20,6 +22,8 @@ function parsePositivtId(value) {
 // Hvis noget går galt i databasen eller servicelaget, så sender den en JSON-fejlbesked tilbage til frontenden
 function sendServiceFejl(res, error, fallbackBesked) {
     if (error.name === 'ServiceError') {
+        // IF ELSE: sendServiceFejl tjekker error.name === 'ServiceError'
+        // // Returnerer error.status (502/404) hvis ServiceError, ellers 500.
         if (error.status >= 500) {
             console.error('Servicefejl:', error);
         } else {
@@ -63,13 +67,16 @@ class CaseController {
             }
 
             const parsedData = CaseParserService.parseCaseRows(rows);
-
+            // TRY CATCH: Try returnerer 201/200 ved succes.
+            // // Catch fanger exceptions og returnerer 500.
             return res.status(200).json({
                 data: parsedData
             });
         } catch (error) {
             console.error('Fejl i getCaseById:', error);
-
+            // HTTP FLOW: Request ankommer her fra caseRoutes.
+            // CaseController returnerer res.status().json() til browseren.
+            // JSON serialiseres automatisk af Express.
             return res.status(500).json({
                 error: 'Intern serverfejl ved hentning af case.'
             });
@@ -389,6 +396,8 @@ class CaseController {
         const laanebeloebTal = Number(laanebeloeb);
         const renteTal = Number(rente);
         const loebetidTal = Number(loebetid_aar);
+        // BETINGET OPERATOR: koebsomkostninger == null ? null : Number(koebsomkostninger)
+        // Ternær operator. Null hvis ikke udfyldt, tal hvis udfyldt.
         const afdragsfriTal = afdragsfri_periode == null ? null : Number(afdragsfri_periode);
 
         if (!Number.isFinite(laanebeloebTal) || laanebeloebTal < 0) {

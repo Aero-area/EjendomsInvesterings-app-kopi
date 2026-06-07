@@ -1,9 +1,10 @@
 // Alle fetch-kald til backend. Kaster Error ved ikke-ok svar. Rører ikke DOM eller state.
-/* 
-Det er den moderne standard for asynkron kommunikation i browseren. 
-Det returnerer et Promise, som vi håndterer med async/await for at holde koden læselig.
-*/
+
+// Det er den moderne standard for asynkron kommunikation i browseren. 
+// Det returnerer et Promise, som vi håndterer med async/await for at holde koden læselig.
+
 // Forsøger at parse fejlbesked fra JSON-svar, ellers fallback.
+// apiClient SKABER IKKE statuskoder. Den modtager dem fra serveren.
 async function parseFejlbesked(response, fallback) {
     try {
         const data = await response.json();
@@ -16,11 +17,13 @@ async function parseFejlbesked(response, fallback) {
 // Adresse
 // Sender en GET-forespørgsel til backenden med en søgetekst og returnerer en liste af adresseforslag. 
 export async function soegAdresseApi(soegetekst) {
+    // HTTP REQUEST OPSTÅR HER: fetch() sender GET/POST/PUT/DELETE.
     const response = await fetch(`/api/adresser/soeg?q=${encodeURIComponent(soegetekst)}`);
     if (!response.ok) {
         const besked = await parseFejlbesked(response, `Forespørgsel mislykkedes (status ${response.status}).`);
         throw new Error(besked);
     }
+    // Response parses med response.json().
     const result = await response.json();
     const forslag = result?.data?.forslag;
     if (!Array.isArray(forslag)) throw new Error('Ugyldigt svarformat fra serveren.');
@@ -71,6 +74,7 @@ export async function opdaterEjendomsprofilApi(id, payload) {
     const response = await fetch(`/api/ejendomsprofiler/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        // JSON body serialiseres med JSON.stringify().
         body: JSON.stringify(payload)
     });
     if (!response.ok) {

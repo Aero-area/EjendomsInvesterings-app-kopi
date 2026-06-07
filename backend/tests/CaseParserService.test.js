@@ -87,4 +87,31 @@ describe('CaseParserService.parseCaseRows', () => {
             udlejningsudgifter: 1000
         });
     });
+
+    test('et tomt rows array returnerer null', () => {
+        const parsed = CaseParserService.parseCaseRows([]);
+        expect(parsed).toBeNull();
+    });
+
+    test('rows kun med NULL værdier i laan_id ikke tilføjer noget til laan arrayet', () => {
+        const rows = [
+            {
+                case_id: 1001,
+                profil_id: 101,
+                casenavn: 'Testcase',
+                koebspris: 2500000,
+                oprettet_dato: '2024-01-01',
+                laan_id: null,
+                laanebeloeb: null,
+                rente: null,
+                loebetid_aar: null
+            }
+        ];
+        const parsed = CaseParserService.parseCaseRows(rows);
+        expect(parsed).not.toBeNull();
+        expect(parsed.laan).toHaveLength(0);
+        expect(parsed.renoveringer).toHaveLength(0);
+        expect(parsed.driftsudgifter).toHaveLength(0);
+        expect(parsed.udlejning).toBeNull();
+    });
 });

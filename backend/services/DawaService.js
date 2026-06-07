@@ -1,5 +1,7 @@
 // Ekstern gateway, der validerer og henter præcise adresseoplysninger fra DAWA-API'et,
 // Modtager et stort JSON-array med koordinater, vejnavne, husnumre osv.
+// ASYNC FETCH: Kalder DAWA API eksternt. Ingen database involvering.
+// Mock fetch i unit test erstatter dette kald. Tester mapping isoleret.
 class DawaService {
     static BASE_URL = 'https://api.dataforsyningen.dk';
     static AUTOCOMPLETE_PATH = '/autocomplete';

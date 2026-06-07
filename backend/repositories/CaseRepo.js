@@ -63,6 +63,8 @@ class CaseRepo {
     }
 
     // Opretter en ny investeringscase for en ejendomsprofil.
+    // ASYNC AWAIT: await frigiver event loopen mens Azure SQL svarer.
+    // Andre brugeres HTTP requests behandles i mellemtiden.
     static async initCase(profil_id, casenavn, koebspris, beskrivelse, koebsomkostninger) {
         const pool = await poolPromise;
 
@@ -236,7 +238,8 @@ class CaseRepo {
 
         return result.rowsAffected[0] > 0;
     }
-
+    // TRANSAKTION START: duplicateCase bruger 6 INSERT SELECT trin.
+    // Rollback hvis ét trin fejler. ACID atomicitet.
     // Opretter en kopi af en investeringscase og alle tilknyttede økonomiposter i én transaktion.
     static async duplicateCase(caseId, nytCasenavn = null) {
         const pool = await poolPromise;
@@ -264,6 +267,8 @@ class CaseRepo {
                     ? nytCasenavn.trim()
                     : `${original.casenavn} (kopi)`;
 
+            // PARAMETERISEREDE QUERIES: .input('navn', sql.Type, værdi)
+            // @ placeholders. Beskytter mod SQL injection.
             const insertCaseRequest = new sql.Request(transaction);
             insertCaseRequest.input('profil_id', sql.Int, original.profil_id);
             insertCaseRequest.input('casenavn', sql.VarChar(100), finalName);
@@ -337,6 +342,8 @@ class CaseRepo {
             `);
 
             await transaction.commit();
+            // OUTPUT INSERTED: Returnerer det genererede case_id fra Azure SQL.
+            // Uden dette ved Node.js ikke hvad det nye id er.
             return nyCaseId;
 
         } catch (error) {

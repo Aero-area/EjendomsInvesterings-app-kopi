@@ -16,6 +16,8 @@ const config = {
     requestTimeout: 30000
 };
 // Opretter en delt connection pool til Azure SQL. Asynkront håndteret med en Promise, så den kan genbruges. 
+// SINGLETON: Connection pool oprettes én gang ved serverstart.
+// Genbruges globalt af alle databasekald. Aldrig genoprettet.
 const poolPromise = new sql.ConnectionPool(config)
     .connect()
     .then(pool => {

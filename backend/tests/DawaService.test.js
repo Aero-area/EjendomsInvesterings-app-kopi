@@ -52,4 +52,29 @@ describe('DawaService.soegAutocomplete', () => {
             }
         ]);
     });
+
+    test('en tom søgestreng kaster en 400 fejl', async () => {
+        await expect(DawaService.soegAutocomplete('')).rejects.toThrow('Søgetekst må ikke være tom.');
+        await expect(DawaService.soegAutocomplete('   ')).rejects.toThrow('Søgetekst må ikke være tom.');
+        
+        try {
+            await DawaService.soegAutocomplete('');
+        } catch (error) {
+            expect(error.name).toBe('ServiceError');
+            expect(error.status).toBe(400);
+            expect(error.code).toBe('DAWA_INPUT_EMPTY');
+        }
+    });
+
+    test('DAWA returnerer et tomt array og outputtet er et tomt forslag array', async () => {
+        global.fetch.mockResolvedValue({
+            ok: true,
+            json: async () => []
+        });
+
+        const resultat = await DawaService.soegAutocomplete('Solbjerg Plads');
+
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+        expect(resultat).toEqual([]);
+    });
 });

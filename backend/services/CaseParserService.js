@@ -27,7 +27,7 @@ class CaseParserService {
         const laanSet = new Set(); // Performance: en effektiv måde at huske, hvilke under-entiteter der allerede er tilføjet, så dubletter fjernes
         const renoveringSet = new Set(); 
         const driftSet = new Set();
-
+        // FOR LOOP: Itererer over alle flade SQL rækker fra findCaseWithDetails.
         for (const row of rows) {
             if (row.laan_id != null && !laanSet.has(row.laan_id)) {
                 laanSet.add(row.laan_id); // Husk dette ID!

@@ -42,4 +42,57 @@ describe('Investeringscase.beregnCashflow', () => {
 
         expect(resultat[29]).toHaveProperty('aar', 30);
     });
+
+    test('beregnCashflow med 0 år kaster en fejl', () => {
+        const testData = {
+            profil_id: 101,
+            casenavn: 'Testcase',
+            koebspris: 2500000,
+            oprettet_dato: '2024-01-01',
+            laan: [],
+            driftsudgifter: [],
+            udlejning: null,
+            renoveringer: []
+        };
+        const investeringscase = new Investeringscase(testData);
+        expect(() => investeringscase.beregnCashflow(0)).toThrow('antalAar skal være et heltal på mindst 30.');
+    });
+});
+
+describe('Investeringscase validering', () => {
+    test('koebspris lig med 0 kaster en fejl', () => {
+        const testData = {
+            profil_id: 101,
+            casenavn: 'Testcase',
+            koebspris: 0,
+            oprettet_dato: '2024-01-01'
+        };
+        expect(() => new Investeringscase(testData)).toThrow('koebspris skal være et positivt tal.');
+    });
+
+    test('koebspris som negativt tal kaster en fejl', () => {
+        const testData = {
+            profil_id: 101,
+            casenavn: 'Testcase',
+            koebspris: -500,
+            oprettet_dato: '2024-01-01'
+        };
+        expect(() => new Investeringscase(testData)).toThrow('koebspris skal være et positivt tal.');
+    });
+
+    test('afdragsfri periode der overstiger løbetiden kaster en fejl', () => {
+        const testData = {
+            profil_id: 101,
+            casenavn: 'Testcase',
+            koebspris: 2500000,
+            oprettet_dato: '2024-01-01',
+            laan: [{
+                laanebeloeb: 2000000,
+                rente: 4,
+                loebetid_aar: 30,
+                afdragsfri_periode: 35
+            }]
+        };
+        expect(() => new Investeringscase(testData)).toThrow('laan[0].afdragsfri_periode skal være mellem 0 og lånets løbetid.');
+    });
 });

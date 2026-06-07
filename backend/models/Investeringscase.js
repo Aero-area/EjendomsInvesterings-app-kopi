@@ -103,7 +103,8 @@ class Investeringscase {
             loebetid: Number(l.loebetid_aar),
             afdragsfri_periode: Number(l.afdragsfri_periode) || 0
         }));
-
+        // FOR LOOP: Itererer fra år 1 til år 30.
+        // // Beregner renteudgift, afdrag, restgæld, cashflow per år.
         for (let aar = 1; aar <= antalAar; aar++) {
             let aaretsRente = 0;
             let aaretsAfdrag = 0;
@@ -152,6 +153,7 @@ class Investeringscase {
             }
 
             // Samler årets indtægter og udgifter.
+            // CASHFLOW FORMEL: lejeindtægt - driftsudgift - ydelse - renovering.
             let cashflow = aarligLeje - aarligDrift - aaretsYdelse - aaretsRenovering;
             // Købsomkostningerne
             if (aar === 1) {
