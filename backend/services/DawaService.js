@@ -17,7 +17,7 @@ class DawaService {
         url.searchParams.set('q', normaliseretSoegetekst); //Søgetekst
         // Begræns til adgangsadresse-typer for at undgå irrelevante resultater. 
         try {
-            const response = await fetch(url, {
+            const response = await fetch(url, { //Med await pauserer funktionen og lader event loopet håndtere andre opgaver indtil svaret ankommer.
                 method: 'GET',
                 headers: {
                     Accept: 'application/json'

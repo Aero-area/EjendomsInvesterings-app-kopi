@@ -2,7 +2,7 @@
 // CaseParserService modtager casens grunddata (navn, pris osv.) som bliver gentaget i hver eneste række.
 class CaseParserService {
     static parseCaseRows(rows) {
-        if (!Array.isArray(rows) || rows.length === 0) {
+        if (!Array.isArray(rows) || rows.length === 0) { // Beskytter mod rows er ikke et array eller er tomt.
             return null;
         }
 
@@ -61,8 +61,8 @@ class CaseParserService {
                 });
             }
 
-            if (row.udlejning_id != null && parsedCase.udlejning === null) {
-                parsedCase.udlejning = {
+            if (row.udlejning_id != null && parsedCase.udlejning === null) { // Udlejning har en UNIQUE constraint på case_id i databasen.
+                parsedCase.udlejning = { // Den tjekker bare om parsedCase.udlejning allerede er sat.
                     udlejning_id: row.udlejning_id,
                     lejeindtaegt: row.lejeindtaegt,
                     udlejningsudgifter: row.udlejningsudgifter ?? 0

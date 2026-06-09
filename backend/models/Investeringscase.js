@@ -83,7 +83,9 @@ class Investeringscase {
         return total;
     }
 
-    // simulerer ejendommens økonomi over 30 år ved i en løkke at trække renter, afdrag, drift og renovering fra lejeindtægterne for hvert enkelt kalenderår.
+    // simulerer ejendommens økonomi over 30 år ved i en løkke at trække renter, afdrag, drift og renovering fra lejeindtægterne for hvert enkelt kalenderår
+    // Beregner årligt cashflow, restgæld og egenkapital år for år
+    //Returnerer et array med 30 objekter, der hver repræsenterer et år.
     beregnCashflow(antalAar = 30) {
         if (!Number.isInteger(antalAar) || antalAar < 30) {
             throw opretValideringsfejl('antalAar skal være et heltal på mindst 30.');

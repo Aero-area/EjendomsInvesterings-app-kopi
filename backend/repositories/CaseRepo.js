@@ -269,7 +269,11 @@ class CaseRepo {
 
             // PARAMETERISEREDE QUERIES: .input('navn', sql.Type, værdi)
             // @ placeholders. Beskytter mod SQL injection.
-            const insertCaseRequest = new sql.Request(transaction);
+            /*
+            sql.Request kan ikke genbruges når parametrene skifter mellem trin, 
+            fordi mssql ikke tillader at registrere samme parameternavn to gange på samme objekt.
+            */
+            const insertCaseRequest = new sql.Request(transaction); 
             insertCaseRequest.input('profil_id', sql.Int, original.profil_id);
             insertCaseRequest.input('casenavn', sql.VarChar(100), finalName);
             insertCaseRequest.input('beskrivelse', sql.VarChar(500), original.beskrivelse);

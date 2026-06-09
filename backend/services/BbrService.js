@@ -47,7 +47,7 @@ class BbrService {
         let boligareal = null;
         let antal_vaerelser = null;
 
-        // 1. Hent Grund
+        // 1. Hent GrundId og grundareal.
         const grundData = await BbrService.#bbrFetch('grund', 'Husnummer', husnummerId, baseUrl, username, password);
         if (!Array.isArray(grundData) || grundData.length === 0) {
             throw BbrService.#createServiceError('BBR_NOT_FOUND', `Ingen matchende grund for dawaId ${husnummerId}.`, 404);
@@ -70,7 +70,7 @@ class BbrService {
         }
 
         if (grundId) {
-            // 2. Hent Bygning
+            // 2. Hent BygningId og byggeår 
             const bygningData = await BbrService.#bbrFetch('bygning', 'Grund', grundId, baseUrl, username, password);
             if (Array.isArray(bygningData) && bygningData.length > 0) {
 
@@ -87,7 +87,7 @@ class BbrService {
                     const bygningId = hovedbygning.id_lokalId;
 
                     if (bygningId) {
-                        // 3. Hent Enhed
+                        // 3. Hent boligdata (boligareal, antal værelser).
                         const enhedData = await BbrService.#bbrFetch('enhed', 'Bygning', bygningId, baseUrl, username, password);
                         if (Array.isArray(enhedData) && enhedData.length > 0) {
 

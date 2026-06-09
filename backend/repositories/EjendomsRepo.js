@@ -61,7 +61,7 @@ class EjendomsRepo {
 
         const result = await pool
             .request()
-            .input('bruger_id', sql.Int, brugerId)
+            .input('bruger_id', sql.Int, brugerId) // FOR JSON PATH: AZURE SQL syntaks der serialisere et SELECT resultat med alle cases samlet. 
             .query(`
                 SELECT 
                     E.profil_id,
@@ -76,7 +76,7 @@ class EjendomsRepo {
                     E.sidst_indhentet_dato,
                     (SELECT COUNT(*) FROM EjendomsInvest.Investeringscase I WHERE I.profil_id = E.profil_id) AS antal_cases,
                     (SELECT I.case_id, I.casenavn FROM EjendomsInvest.Investeringscase I WHERE I.profil_id = E.profil_id FOR JSON PATH) AS cases_json
-                FROM EjendomsInvest.Ejendomsprofil E
+                FROM EjendomsInvest.Ejendomsprofil E 
                 WHERE E.bruger_id = @bruger_id
                 ORDER BY E.profil_id DESC;
             `);
@@ -115,6 +115,10 @@ class EjendomsRepo {
     hvis ét trin fejler, rulles alt tilbage (rollback), så databasen aldrig lander i en korrupt 
     eller halvslettet tilstand.
     */
+   /*
+   deleteRequest kan genbruges fordi alle 6 DELETE statements 
+   bruger præcis den samme parameter profil_id som kun registreres én gang.
+   */
     static async deleteProfil(profilId, brugerId) {
         const pool = await poolPromise;
         const transaction = new sql.Transaction(pool);

@@ -42,7 +42,7 @@ describe('Investeringscase.beregnCashflow', () => {
 
         expect(resultat[29]).toHaveProperty('aar', 30);
     });
-
+    // Tilfælde hvor antalAar er mindre end 30.
     test('beregnCashflow med 0 år kaster en fejl', () => {
         const testData = {
             profil_id: 101,
@@ -58,7 +58,7 @@ describe('Investeringscase.beregnCashflow', () => {
         expect(() => investeringscase.beregnCashflow(0)).toThrow('antalAar skal være et heltal på mindst 30.');
     });
 });
-
+// Tilfælde hvor antalAar ikke er et heltal.
 describe('Investeringscase validering', () => {
     test('koebspris lig med 0 kaster en fejl', () => {
         const testData = {
@@ -69,7 +69,7 @@ describe('Investeringscase validering', () => {
         };
         expect(() => new Investeringscase(testData)).toThrow('koebspris skal være et positivt tal.');
     });
-
+    // Tilfælde hvor koebspris er et negativt tal. 
     test('koebspris som negativt tal kaster en fejl', () => {
         const testData = {
             profil_id: 101,
@@ -79,7 +79,7 @@ describe('Investeringscase validering', () => {
         };
         expect(() => new Investeringscase(testData)).toThrow('koebspris skal være et positivt tal.');
     });
-
+    // Tilfælde hvor koebsomkostninger er et negativt tal. 
     test('afdragsfri periode der overstiger løbetiden kaster en fejl', () => {
         const testData = {
             profil_id: 101,

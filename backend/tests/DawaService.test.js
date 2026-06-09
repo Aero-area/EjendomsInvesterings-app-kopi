@@ -52,7 +52,7 @@ describe('DawaService.soegAutocomplete', () => {
             }
         ]);
     });
-
+    // Tilfælde hvor DAWA returnere et tomt array.
     test('en tom søgestreng kaster en 400 fejl', async () => {
         await expect(DawaService.soegAutocomplete('')).rejects.toThrow('Søgetekst må ikke være tom.');
         await expect(DawaService.soegAutocomplete('   ')).rejects.toThrow('Søgetekst må ikke være tom.');
@@ -65,7 +65,7 @@ describe('DawaService.soegAutocomplete', () => {
             expect(error.code).toBe('DAWA_INPUT_EMPTY');
         }
     });
-
+    // Tilfælde hvor DAWA returnere et tomt array.
     test('DAWA returnerer et tomt array og outputtet er et tomt forslag array', async () => {
         global.fetch.mockResolvedValue({
             ok: true,

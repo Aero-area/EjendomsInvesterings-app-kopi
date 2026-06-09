@@ -68,7 +68,7 @@ class CaseController {
 
             const parsedData = CaseParserService.parseCaseRows(rows);
             // TRY CATCH: Try returnerer 201/200 ved succes.
-            // // Catch fanger exceptions og returnerer 500.
+            // Catch fanger exceptions og returnerer 500.
             return res.status(200).json({
                 data: parsedData
             });

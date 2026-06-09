@@ -87,12 +87,14 @@ describe('CaseParserService.parseCaseRows', () => {
             udlejningsudgifter: 1000
         });
     });
-
+    // Tilfælde hvor der ikke er relationer (ingen lån, ingen driftsudgifter, ingen udljening)
+    // rows er ikke et array eller er tomt. 
     test('et tomt rows array returnerer null', () => {
         const parsed = CaseParserService.parseCaseRows([]);
         expect(parsed).toBeNull();
     });
-
+    // Tilfælde hvor der er NULL værdier
+    // rows er et gyldigt array men tomt
     test('rows kun med NULL værdier i laan_id ikke tilføjer noget til laan arrayet', () => {
         const rows = [
             {

@@ -1,4 +1,4 @@
-// Fælles frontend-state – skrives kun af app.js, læses af views.js
+// Fælles frontend-state – skrives kun af app.js, læses af views.js og apiClient.js 
 
 export const valgtAdresseState = {
     dawaId: null,
